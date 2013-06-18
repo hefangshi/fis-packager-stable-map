@@ -78,16 +78,19 @@ module.exports = function(ret, conf, settings, opt){
     //pack
     fis.util.map(pkgMap, function(pid, pkg){
         //collect contents
-        var content = '', has = [], requires = [], requireMap = {};
+        var content = '', has = [], index = 0,
+            requires = [], requireMap = {};
         pkg.pkgs.forEach(function(pkg){
-            var len = pkg.length;
-            pkg.forEach(function(file, index){
-                content += file.getContent();
-                if(index < len){
-                    content += '\n';
-                    if(file.rExt === '.js'){
-                        content += ';';
+            pkg.forEach(function(file){
+                var c = file.getContent();
+                if(c != ''){
+                    if(index++ > 0){
+                        content += '\n';
+                        if(file.rExt === '.js'){
+                            content += ';';
+                        }
                     }
+                    content += c;
                 }
                 var id = file.getId();
                 ret.map.res[id].pkg = pid;
