@@ -16,7 +16,7 @@ module.exports = function(ret, conf, settings, opt){
         if(fis.util.is(patterns, 'Array') && patterns.length){
             var pid = (ns ? ns + ':' : '') + 'p' + index,
                 subpath = path.replace(/^\//, ''),
-                pkg = ret.pkg[subpath] = fis.file(root, subpath);
+                pkg = fis.file(root, subpath);
             pkg.useHash = true;
             pkg.url = pkg.release = '/' + subpath;
             if(typeof ret.src[pkg.subpath] !== 'undefined'){
@@ -99,21 +99,25 @@ module.exports = function(ret, conf, settings, opt){
                 has.push(id);
             });
         });
-        pkg.file.setContent(content);
-        
-        //collect dependencies
-        var deps = [];
-        requires.forEach(function(id){
-            if(!requireMap[id]){
-                deps.push(id);
-                requireMap[id] = true;
+        if(has.length){
+            pkg.file.setContent(content);
+            ret.pkg[pkg.file.subpath] = pkg.file;
+            //collect dependencies
+            var deps = [];
+            requires.forEach(function(id){
+                if(!requireMap[id]){
+                    deps.push(id);
+                    requireMap[id] = true;
+                }
+            });
+            var pkgInfo = ret.map.pkg[pid] = {
+                uri  : pkg.file.getUrl(opt.hash, opt.domain),
+                type : pkg.file.rExt.replace(/^\./, ''),
+                has  : has
+            };
+            if(deps.length){
+                pkgInfo.deps = deps;
             }
-        });
-        ret.map.pkg[pid] = {
-            uri  : pkg.file.getUrl(opt.hash, opt.domain),
-            type : pkg.file.rExt.replace(/^\./, ''),
-            has  : has,
-            deps : deps
-        };
+        }
     });
 };
