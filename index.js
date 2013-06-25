@@ -17,8 +17,6 @@ module.exports = function(ret, conf, settings, opt){
             var pid = (ns ? ns + ':' : '') + 'p' + index,
                 subpath = path.replace(/^\//, ''),
                 pkg = fis.file(root, subpath);
-            pkg.useHash = true;
-            pkg.url = pkg.release = '/' + subpath;
             if(typeof ret.src[pkg.subpath] !== 'undefined'){
                 fis.log.warning('there is a namesake file of package [' + path + ']');
             }
