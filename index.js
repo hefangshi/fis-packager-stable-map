@@ -5,11 +5,10 @@
 
 'use strict';
 
-var NS = fis.config.get('namespace');
-var NS_CONNECTOR = fis.config.get('namespaceConnector', ':');
-
 module.exports = function(ret, conf, settings, opt){
     var pkgMap = {}, packed = {},
+        ns = fis.config.get('namespace'),
+        connector = fis.config.get('namespaceConnector', ':'),
         root = fis.project.getProjectPath();
     //construct package table
     fis.util.map(conf, function(path, patterns, index){
@@ -17,7 +16,7 @@ module.exports = function(ret, conf, settings, opt){
             patterns = [ patterns ];
         }
         if(fis.util.is(patterns, 'Array') && patterns.length){
-            var pid = (NS ? NS + NS_CONNECTOR : '') + 'p' + index,
+            var pid = (ns ? ns + connector : '') + 'p' + index,
                 subpath = path.replace(/^\//, ''),
                 pkg = fis.file(root, subpath);
             if(typeof ret.src[pkg.subpath] !== 'undefined'){
