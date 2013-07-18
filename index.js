@@ -45,29 +45,25 @@ module.exports = function(ret, conf, settings, opt){
     };
     
     //pack file
-    var pack = function(subpath, file, pkg){
+    var pack = function(subpath, file){
         if(packed[subpath] || file.isImage()) return;
-        if(pkg){
+        fis.util.map(pkgMap, function(pid, pkg){
             var index = hit(file.subpath, pkg.regs);
             if(index !== false){
                 packed[subpath] = true;
                 file.requires.forEach(function(id){
                     var dep = ret.ids[id];
                     if(dep && dep.rExt === file.rExt){
-                        pack(dep.subpath, dep, pkg);
+                        pack(dep.subpath, dep);
                     }
                 });
                 var stack = pkg.pkgs[index] || [];
                 stack.push(file);
                 pkg.pkgs[index] = stack;
-                //add packed
+                //stop to pack
                 return true;
             }
-        } else {
-            fis.util.map(pkgMap, function(pid, pkg){
-                return pack(file.subpath, file, pkg);
-            });
-        }
+        });
     };
     
     //walk
