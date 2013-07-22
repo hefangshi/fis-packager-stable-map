@@ -12,7 +12,7 @@ module.exports = function(ret, conf, settings, opt){
         root = fis.project.getProjectPath();
     //construct package table
     fis.util.map(conf, function(path, patterns, index){
-        if(typeof patterns === 'string'){
+        if(typeof patterns === 'string' || patterns instanceof RegExp){
             patterns = [ patterns ];
         }
         if(fis.util.is(patterns, 'Array') && patterns.length){
