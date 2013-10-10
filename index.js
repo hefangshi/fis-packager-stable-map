@@ -82,8 +82,10 @@ module.exports = function(ret, conf, settings, opt){
                 if(c != ''){
                     if(index++ > 0){
                         content += '\n';
-                        if(file.rExt === '.js'){
+                        if(file.isJsLike){
                             content += ';';
+                        } else if(file.isCssLike){
+                            c = c.replace(/@charset\s+(?:'[^']*'|"[^"]*"|\S*);?/gi, '');
                         }
                     }
                     content += c;
