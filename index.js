@@ -78,23 +78,25 @@ module.exports = function(ret, conf, settings, opt){
             requires = [], requireMap = {};
         pkg.pkgs.forEach(function(pkg){
             pkg.forEach(function(file){
-                var c = file.getContent();
-                if(c != ''){
-                    if(index++ > 0){
-                        content += '\n';
-                        if(file.isJsLike){
-                            content += ';';
-                        } else if(file.isCssLike){
-                            c = c.replace(/@charset\s+(?:'[^']*'|"[^"]*"|\S*);?/gi, '');
-                        }
-                    }
-                    content += c;
-                }
                 var id = file.getId();
-                ret.map.res[id].pkg = pid;
-                requires = requires.concat(file.requires);
-                requireMap[id] = true;
-                has.push(id);
+                if(ret.map.res[id]){
+                    var c = file.getContent();
+                    if(c != ''){
+                        if(index++ > 0){
+                            content += '\n';
+                            if(file.isJsLike){
+                                content += ';';
+                            } else if(file.isCssLike){
+                                c = c.replace(/@charset\s+(?:'[^']*'|"[^"]*"|\S*);?/gi, '');
+                            }
+                        }
+                        content += c;
+                    }
+                    ret.map.res[id].pkg = pid;
+                    requires = requires.concat(file.requires);
+                    requireMap[id] = true;
+                    has.push(id);
+                }
             });
         });
         if(has.length){
