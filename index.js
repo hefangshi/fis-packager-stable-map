@@ -48,8 +48,7 @@ module.exports = function (ret, conf, settings, opt) {
     };
 
     //pack file
-    var pack = function (subpath, file, from) {
-        from = from || {};
+    var pack = function (subpath, file) {
         if (packed[subpath] || file.isImage()) return;
         fis.util.map(pkgMap, function (pid, pkg) {
             var index = hit(file.subpath, pkg.regs, file);
@@ -58,7 +57,7 @@ module.exports = function (ret, conf, settings, opt) {
                 file.requires.forEach(function (id) {
                     var dep = ret.ids[id];
                     if (dep && dep.rExt === file.rExt) {
-                        pack(dep.subpath, dep, file);
+                        pack(dep.subpath, dep);
                     }
                 });
                 var stack = pkg.pkgs[index] || [];
@@ -99,8 +98,6 @@ module.exports = function (ret, conf, settings, opt) {
         }
         return sortedPkg;
     }
-
-    var srcList = [];
 
     //walk
     fis.util.map(ret.src, function (subpath, file) {
